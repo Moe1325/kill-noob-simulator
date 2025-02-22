@@ -10,7 +10,7 @@ end)
 
 
 tab:Button("Glock Switch", function()
-loadstring(game:HttpGet"https://rawscripts.net/raw/Kill-noobs-simulator-Noob-Give-G-Switch-Open-Source-28259")()
+loadstring(game:HttpGet"https://raw.githubusercontent.com/Moe1325/kill-noob-simulator/refs/heads/main/switch.lua")()
 end)
 
 local changeclr = win:Tab("Change UI Color")
