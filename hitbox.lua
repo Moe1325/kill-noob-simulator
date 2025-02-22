@@ -1,5 +1,5 @@
 -- Made By InfinityMercury
-_G.Size = 15
+_G.Size = 17
 _G.Disabled = true
 
 game:GetService('RunService').RenderStepped:connect(function()
