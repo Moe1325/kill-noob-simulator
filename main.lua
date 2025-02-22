@@ -9,7 +9,7 @@ loadstring(game:HttpGet"https://raw.githubusercontent.com/Moe1325/kill-noob-simu
 end)
 
 
-tab:Button("Glock Switch", function()
+tab:Button2("Glock Switch", function()
 loadstring(game:HttpGet"https://raw.githubusercontent.com/Moe1325/kill-noob-simulator/refs/heads/main/switch.lua")()
 end)
 
