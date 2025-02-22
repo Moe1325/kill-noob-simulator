@@ -13,7 +13,7 @@ loadstring(game:HttpGet"https://raw.githubusercontent.com/Moe1325/kill-noob-simu
 end)
 
 tab:Button("Hitbox Expander", function()
-loadstring(game:HttpGet"https://github.com/Moe1325/kill-noob-simulator/blob/main/hitbox.lua")()
+loadstring(game:HttpGet"https://raw.githubusercontent.com/Moe1325/kill-noob-simulator/refs/heads/main/hitbox.lua")()
 end)
 
 tab:Button("Azure Modded", function()
