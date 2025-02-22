@@ -8,9 +8,16 @@ tab:Button("Infinite Ammo", function()
 loadstring(game:HttpGet"https://raw.githubusercontent.com/Moe1325/kill-noob-simulator/refs/heads/main/ammo.lua")()
 end)
 
-
 tab:Button("Glock Switch", function()
 loadstring(game:HttpGet"https://raw.githubusercontent.com/Moe1325/kill-noob-simulator/refs/heads/main/switch.lua")()
+end)
+
+tab:Button("Azure Modded", function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Actyrn/Scripts/main/AzureModded"))()
+end)
+
+tab:Button("Infinite Yield", function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/edgeiy/infiniteyield/master/source"))()
 end)
 
 local changeclr = win:Tab("Change UI Color")
