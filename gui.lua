@@ -12,6 +12,10 @@ tab:Button("Glock Switch", function()
 loadstring(game:HttpGet"https://raw.githubusercontent.com/Moe1325/kill-noob-simulator/refs/heads/main/switch.lua")()
 end)
 
+tab:Button("Hitbox Expander", function()
+loadstring(game:HttpGet"https://github.com/Moe1325/kill-noob-simulator/blob/main/hitbox.lua")()
+end)
+
 tab:Button("Azure Modded", function()
 loadstring(game:HttpGet("https://raw.githubusercontent.com/Actyrn/Scripts/main/AzureModded"))()
 end)
