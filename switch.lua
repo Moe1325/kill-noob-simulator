@@ -7,28 +7,34 @@ local GunNames = {
     "SawnOff", "Shotgun", "Uzi"
 }
 
-local AmmoValue = 1000 -- change the number to the ammo count that you wish ;)
+local SwitchValue = true
 
-local SetAmmo = function(Gun)
-    if not Gun:IsA("Tool") or not table.find(GunNames, Gun.Name) then return end
+local function SetSwitch(Gun)
+    if not Gun:IsA("Tool") then 
+        print("Not a tool:", Gun.Name)
+        return
+    end
 
-    local Stats = Gun:FindFirstChild("Stats")
-  
-    if not Stats then return end    
+    if not table.find(GunNames, Gun.Name) then
+        print("Gun not in list:", Gun.Name)
+        return
+    end
 
-    local Ammo = Stats.Ammo
-
-    if not Ammo then return end
-
-    Ammo.Value = AmmoValue
+    local Switch = Gun:FindFirstChild("Switch")
+    if Switch then
+        Switch.Value = SwitchValue
+        print("Switch set to", SwitchValue, "for", Gun.Name)
+    else
+        print("No Switch found in", Gun.Name)
+    end
 end
 
-local OnChildAdded = function(Child)
-    SetAmmo(Child)
+local function OnChildAdded(Child)
+    SetSwitch(Child)
 end
 
 Player.Backpack.ChildAdded:Connect(OnChildAdded)
 
 for _, Object in ipairs(Player.Backpack:GetChildren()) do
-    SetAmmo(Object)
+    SetSwitch(Object)
 end
