@@ -1,6 +1,5 @@
 local lib = loadstring(game:HttpGet"https://raw.githubusercontent.com/dawid-scripts/UI-Libs/main/Vape.txt")()
-local win = lib:Window("Moe Hub", Color3.fromRGB(44, 120, 224), Enum.KeyCode.RightControl)
-
+local win = lib:Window("PREVIEW", Color3.fromRGB(44, 120, 224), Enum.KeyCode.RightControl)
 local mainTab = win:Tab("Main")
 local teleportTab = win:Tab("Teleport")
 
@@ -135,6 +134,26 @@ mainTab:Toggle("Car ESP", false, function(v)
     toggleESP(cars, v, "Cars", "Car", "Car", Color3.fromRGB(0, 0, 255))
 end)
 
+mainTab:Button("Infinite Ammo", function()
+loadstring(game:HttpGet"https://raw.githubusercontent.com/Moe1325/kill-noob-simulator/refs/heads/main/ammo.lua")()
+end)
+
+mainTab:Button("Glock Switch", function()
+loadstring(game:HttpGet"https://raw.githubusercontent.com/Moe1325/kill-noob-simulator/refs/heads/main/switch.lua")()
+end)
+
+mainTab:Button("Hitbox Expander", function()
+loadstring(game:HttpGet"https://raw.githubusercontent.com/Moe1325/kill-noob-simulator/refs/heads/main/hitbox.lua")()
+end)
+
+mainTab:Button("Azure Modded", function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Actyrn/Scripts/main/AzureModded"))()
+end)
+
+mainTab:Button("Infinite Yield", function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/edgeiy/infiniteyield/master/source"))()
+end)
+
 teleportTab:Button("Teleport to Nearest Crate", function()
     local target = findValidPart(ws:FindFirstChild("Crate"))
     if target then
@@ -196,30 +215,4 @@ end)
 
 teleportTab:Button("Teleport to Safe Zone", function()
     tp(Vector3.new(-166, 8, -432), 0)
-end)
-
--- 🚀 **Your Custom Scripts**
-mainTab:Button("Infinite Ammo", function()
-    loadstring(game:HttpGet"https://raw.githubusercontent.com/Moe1325/kill-noob-simulator/refs/heads/main/ammo.lua")()
-end)
-
-mainTab:Button("Glock Switch", function()
-    loadstring(game:HttpGet"https://raw.githubusercontent.com/Moe1325/kill-noob-simulator/refs/heads/main/switch.lua")()
-end)
-
-mainTab:Button("Hitbox Expander", function()
-    loadstring(game:HttpGet"https://raw.githubusercontent.com/Moe1325/kill-noob-simulator/refs/heads/main/hitbox.lua")()
-end)
-
-mainTab:Button("Azure Modded", function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/Actyrn/Scripts/main/AzureModded"))()
-end)
-
-mainTab:Button("Infinite Yield", function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/edgeiy/infiniteyield/master/source"))()
-end)
-
-local changeclr = win:Tab("Change UI Color")
-changeclr:Colorpicker("Change UI Color", Color3.fromRGB(44, 120, 224), function(t)
-    lib:ChangePresetColor(Color3.fromRGB(t.R * 255, t.G * 255, t.B * 255))
 end)
