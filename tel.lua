@@ -1,5 +1,5 @@
 local lib = loadstring(game:HttpGet"https://raw.githubusercontent.com/dawid-scripts/UI-Libs/main/Vape.txt")()
-local win = lib:Window("PREVIEW", Color3.fromRGB(44, 120, 224), Enum.KeyCode.RightControl)
+local win = lib:Window("Moe Hub", Color3.fromRGB(44, 120, 224), Enum.KeyCode.RightControl)
 local mainTab = win:Tab("Main")
 local teleportTab = win:Tab("Teleport")
 
