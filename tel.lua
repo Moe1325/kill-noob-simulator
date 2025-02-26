@@ -1,62 +1,85 @@
 local lib = loadstring(game:HttpGet"https://raw.githubusercontent.com/dawid-scripts/UI-Libs/main/Vape.txt")()
 local win = lib:Window("PREVIEW", Color3.fromRGB(44, 120, 224), Enum.KeyCode.RightControl)
-local tab = win:Tab("Main")
+
+local mainTab = win:Tab("Main")
+local teleportTab = win:Tab("Teleport")
 
 local ws = game:GetService("Workspace")
 local plr = game:GetService("Players").LocalPlayer
 local cam = game:GetService("Workspace").CurrentCamera
 local rs = game:GetService("RunService")
+local sg = game:GetService("StarterGui")
 
 local crates, upgrades, safeboxes, cars = {}, {}, {}, {}
-local espCratesEnabled, espUpgradesEnabled, espSafeboxesEnabled, espCarsEnabled = false, false, false, false
+local espCratesEnabled, espUpgradesEnabled, espSafeBoxesEnabled, espCarsEnabled = false, false, false, false
 
-local function tp(cords)
+local function notify(txt)
+    sg:SetCore("SendNotification", {
+        Title = "Moe Hub",
+        Text = txt,
+        Button1 = "OK",
+        Duration = 5
+    })
+end
+
+-- 🚀 **Instant Teleport Function**
+local function tp(targetPos, offsetY)
     if plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
-        plr.Character.HumanoidRootPart.CFrame = CFrame.new(cords)
+        plr.Character.HumanoidRootPart.CFrame = CFrame.new(targetPos + Vector3.new(0, offsetY, 0))
     end
 end
 
 local function findValidPart(model)
-    return model:FindFirstChild("HumanoidRootPart") or model:FindFirstChildWhichIsA("BasePart")
+    return model and (model:FindFirstChild("HumanoidRootPart") or model:FindFirstChildWhichIsA("BasePart")) or nil
 end
 
-local function toggleESP(tbl, state, parentPath, objectName, label, color)
-    if state then
-        local parent = ws:FindFirstChild(parentPath) and ws[parentPath]:FindFirstChild("EctModels")
-        if parent then
-            for _, v in ipairs(parent:GetChildren()) do
-                if v:IsA("Model") and v.Name == objectName then
-                    local part = findValidPart(v)
-                    if part then
-                        local h = Instance.new("Highlight", part)
-                        h.FillColor = color
-                        h.OutlineColor = Color3.fromRGB(255, 255, 255)
-                        h.FillTransparency = 0.5
-                        h.OutlineTransparency = 0
+local function toggleESP(tbl, state, parentPath, objName, label, color)
+    for _, data in pairs(tbl) do
+        if data.h then data.h:Destroy() end
+        if data.d then data.d:Remove() end
+        if data.t then data.t:Remove() end
+    end
+    table.clear(tbl)
 
-                        local d = Drawing.new("Line")
-                        d.Thickness = 1
-                        d.Color = color
+    if not state then return end
 
-                        local t = Drawing.new("Text")
-                        t.Text = label
-                        t.Size = 18
-                        t.Color = color
-                        t.Center = true
-                        t.Outline = true
+    local parent = type(parentPath) == "string" and ws:FindFirstChild(parentPath) or parentPath
+    if not parent then
+        notify(label .. " Not Found")
+        return
+    end
 
-                        tbl[v] = {part = part, h = h, d = d, t = t}
-                    end
-                end
+    local found = false
+    for _, v in ipairs(parent:GetChildren()) do
+        if v:IsA("Model") and (objName == nil or v.Name == objName) then
+            local part = findValidPart(v)
+            if part then
+                found = true
+
+                local h = Instance.new("Highlight", part)
+                h.FillColor = color
+                h.OutlineColor = Color3.fromRGB(255, 255, 255)
+                h.FillTransparency = 0.5
+                h.OutlineTransparency = 0
+
+                local d = Drawing.new("Line")
+                d.Thickness = 2
+                d.Color = color
+
+                local t = Drawing.new("Text")
+                t.Text = label
+                t.Size = 18
+                t.Color = color
+                t.Center = true
+                t.Outline = true
+
+                tbl[part] = {part = part, h = h, d = d, t = t}
             end
         end
-    else
-        for _, data in pairs(tbl) do
-            if data.h then data.h:Destroy() end
-            if data.d then data.d:Remove() end
-            if data.t then data.t:Remove() end
-        end
-        table.clear(tbl)
+    end
+
+    if not found then
+        notify(label .. " Not Found")
     end
 end
 
@@ -64,13 +87,13 @@ rs.RenderStepped:Connect(function()
     for tbl, enabled in pairs({
         [crates] = espCratesEnabled,
         [upgrades] = espUpgradesEnabled,
-        [safeboxes] = espSafeboxesEnabled,
+        [safeboxes] = espSafeBoxesEnabled,
         [cars] = espCarsEnabled
     }) do
         if enabled then
-            for _, data in pairs(tbl) do
-                if data.part and data.part:IsDescendantOf(ws) then
-                    local v, o = cam:WorldToViewportPoint(data.part.Position)
+            for p, data in pairs(tbl) do
+                if p and p:IsDescendantOf(ws) then
+                    local v, o = cam:WorldToViewportPoint(p.Position)
                     data.d.Visible = o
                     data.t.Visible = o
                     if o then
@@ -87,94 +110,116 @@ rs.RenderStepped:Connect(function()
     end
 end)
 
-tab:Toggle("Crate ESP", false, function(v)
+mainTab:Toggle("Crate ESP", false, function(v)
     espCratesEnabled = v
-    toggleESP(crates, v, "Map", "Crate", "Crate", Color3.fromRGB(255, 0, 0))
+    toggleESP(crates, v, ws, "Crate", "Crate", Color3.fromRGB(255, 0, 0))
 end)
 
-tab:Toggle("Upgrades ESP", false, function(v)
+mainTab:Toggle("Upgrades ESP", false, function(v)
     espUpgradesEnabled = v
-    toggleESP(upgrades, v, "Upgrades", "Upgrades", "Upgrade", Color3.fromRGB(0, 255, 0))
+    toggleESP(upgrades, v, "Upgrades", nil, "Upgrade", Color3.fromRGB(0, 255, 0))
 end)
 
-tab:Toggle("Safe Box ESP", false, function(v)
-    espSafeboxesEnabled = v
-    toggleESP(safeboxes, v, "Map", "DepositBox", "Safe Box", Color3.fromRGB(255, 255, 0))
+mainTab:Toggle("Safe Box ESP", false, function(v)
+    local ectModels = ws:FindFirstChild("Map") and ws.Map:FindFirstChild("EctModels")
+    if not ectModels then
+        notify("Safe Box Folder Not Found")
+        return
+    end
+    espSafeBoxesEnabled = v
+    toggleESP(safeboxes, v, ectModels, "DepositBox", "Safe Box", Color3.fromRGB(255, 255, 0))
 end)
 
-tab:Toggle("Car ESP", false, function(v)
+mainTab:Toggle("Car ESP", false, function(v)
     espCarsEnabled = v
     toggleESP(cars, v, "Cars", "Car", "Car", Color3.fromRGB(0, 0, 255))
 end)
 
-tab:Button("Teleport to Nearest Crate", function()
-    if ws:FindFirstChild("Map") and ws.Map:FindFirstChild("EctModels") then
-        local closest, minDist = nil, math.huge
-        for _, v in ipairs(ws.Map.EctModels:GetChildren()) do
-            if v:IsA("Model") and v.Name == "Crate" then
-                local part = findValidPart(v)
-                if part then
-                    local dist = (part.Position - plr.Character.HumanoidRootPart.Position).Magnitude
-                    if dist < minDist then
-                        closest, minDist = part, dist
-                    end
-                end
-            end
-        end
-        if closest then tp(closest.Position) end
+teleportTab:Button("Teleport to Nearest Crate", function()
+    local target = findValidPart(ws:FindFirstChild("Crate"))
+    if target then
+        tp(target.Position, 5)
+    else
+        notify("Crate Not Found")
     end
 end)
 
-tab:Button("Teleport to Nearest Upgrade", function()
-    if ws:FindFirstChild("Upgrades") then
-        local closest, minDist = nil, math.huge
-        for _, v in ipairs(ws.Upgrades:GetChildren()) do
-            if v:IsA("Model") then
-                local part = findValidPart(v)
-                if part then
-                    local dist = (part.Position - plr.Character.HumanoidRootPart.Position).Magnitude
-                    if dist < minDist then
-                        closest, minDist = part, dist
-                    end
-                end
-            end
-        end
-        if closest then tp(closest.Position) end
+teleportTab:Button("Teleport to Nearest Upgrade", function()
+    local target = findValidPart(ws:FindFirstChild("Upgrades"))
+    if target then
+        tp(target.Position, 0)
+    else
+        notify("Upgrade Not Found")
     end
 end)
 
-tab:Button("Teleport to Nearest Safe Box", function()
-    if ws:FindFirstChild("Map") and ws.Map:FindFirstChild("EctModels") then
-        local closest, minDist = nil, math.huge
-        for _, v in ipairs(ws.Map.EctModels:GetChildren()) do
-            if v:IsA("Model") and v.Name == "DepositBox" then
-                local part = findValidPart(v)
-                if part then
-                    local dist = (part.Position - plr.Character.HumanoidRootPart.Position).Magnitude
-                    if dist < minDist then
-                        closest, minDist = part, dist
-                    end
-                end
-            end
-        end
-        if closest then tp(closest.Position) end
+teleportTab:Button("Teleport to Nearest Safe Box", function()
+    local ectModels = ws:FindFirstChild("Map") and ws.Map:FindFirstChild("EctModels")
+    if not ectModels then
+        notify("Safe Box Folder Not Found")
+        return
+    end
+    local target = findValidPart(ectModels:FindFirstChild("DepositBox"))
+    if target then
+        tp(target.Position, 5)
+    else
+        notify("Safe Box Not Found")
     end
 end)
 
-tab:Button("Teleport to Nearest Car", function()
-    if ws:FindFirstChild("Cars") then
-        local closest, minDist = nil, math.huge
-        for _, v in ipairs(ws.Cars:GetChildren()) do
-            if v:IsA("Model") then
-                local part = findValidPart(v)
-                if part then
-                    local dist = (part.Position - plr.Character.HumanoidRootPart.Position).Magnitude
-                    if dist < minDist then
-                        closest, minDist = part, dist
-                    end
+teleportTab:Button("Teleport to Nearest Car", function()
+    local carsFolder = ws:FindFirstChild("Cars")
+    if not carsFolder then
+        notify("Cars Folder Not Found")
+        return
+    end
+
+    local closest, minDist, closestCar = nil, math.huge, nil
+    for _, v in ipairs(carsFolder:GetChildren()) do
+        if v:IsA("Model") and v.Name == "Car" then
+            local part = findValidPart(v)
+            if part then
+                local dist = (part.Position - plr.Character.HumanoidRootPart.Position).Magnitude
+                if dist < minDist then
+                    closest, minDist, closestCar = part, dist, v
                 end
             end
         end
-        if closest then tp(closest.Position) end
     end
+
+    if closest then
+        tp(closest.Position, 0)
+    else
+        notify("Car Not Found")
+    end
+end)
+
+teleportTab:Button("Teleport to Safe Zone", function()
+    tp(Vector3.new(-166, 8, -432), 0)
+end)
+
+-- 🚀 **Your Custom Scripts**
+mainTab:Button("Infinite Ammo", function()
+    loadstring(game:HttpGet"https://raw.githubusercontent.com/Moe1325/kill-noob-simulator/refs/heads/main/ammo.lua")()
+end)
+
+mainTab:Button("Glock Switch", function()
+    loadstring(game:HttpGet"https://raw.githubusercontent.com/Moe1325/kill-noob-simulator/refs/heads/main/switch.lua")()
+end)
+
+mainTab:Button("Hitbox Expander", function()
+    loadstring(game:HttpGet"https://raw.githubusercontent.com/Moe1325/kill-noob-simulator/refs/heads/main/hitbox.lua")()
+end)
+
+mainTab:Button("Azure Modded", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/Actyrn/Scripts/main/AzureModded"))()
+end)
+
+mainTab:Button("Infinite Yield", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/edgeiy/infiniteyield/master/source"))()
+end)
+
+local changeclr = win:Tab("Change UI Color")
+changeclr:Colorpicker("Change UI Color", Color3.fromRGB(44, 120, 224), function(t)
+    lib:ChangePresetColor(Color3.fromRGB(t.R * 255, t.G * 255, t.B * 255))
 end)
