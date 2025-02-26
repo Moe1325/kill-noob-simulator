@@ -7,7 +7,7 @@ local GunNames = {
     "SawnOff", "Shotgun", "Uzi"
 }
 
-local AmmoValue = 99999 -- change the number to the ammo count that you wish ;)
+local AmmoValue = 1999999 -- change the number to the ammo count that you wish ;)
 
 local SetAmmo = function(Gun)
     if not Gun:IsA("Tool") or not table.find(GunNames, Gun.Name) then return end
