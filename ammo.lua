@@ -2,7 +2,7 @@ local Player = game:GetService("Players").LocalPlayer
 
 local GunNames = {
     "AK", "AUGA1", "ARP", "Beretta", "Bullpup", "CZ75", "Deagle", "DoubleBarrel",
-    "Draco", "Famas", "Glock18", "M1Grand", "M4A1", "MAC10", "MAG7", "MP5", "MP7",
+    "Draco", "Famas", "Glock18", "M1Garand", "M4A1", "MAC10", "MAG7", "MP5", "MP7",
     "MP9", "Negev", "Nova", "P220", "PPBizon", "Pistol", "RPG", "Revolver", "SA58",
     "SawnOff", "Shotgun", "Uzi"
 }
